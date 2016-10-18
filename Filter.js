@@ -2,12 +2,14 @@ var columns = {
     bmwSach: "BMW_x002d_Sach_x002d_Nr_x002e__x0020__x0028_BMW_x0020_part_x0020_number_x0029_"
 };
 $(document).ready(function() {
+    $("#dummySelect").chosen();
     $SP().list("Prüfberichte").info(function(fields) {
         var nameDisplaynameMap = {};
         var displaynameNameMap = {};
         var displayedColumns = [];
         var valuesForDropDown = {};
         var displayNameColumnNumberMap = {};
+        //creating maps so we can get SP name of column from displayed name and vice versa
         for (var i = 0; i < fields.length; i++) {
             var key = fields[i]["Name"];
             var value = fields[i]["DisplayName"];
@@ -17,17 +19,23 @@ $(document).ready(function() {
         };
 
         $SP().list("Prüfberichte").view("Alle Dokumente", function(dataView, viewID) {
+            //create the array to fill the table head
             var numberOfColumns = dataView.fields.length;
             for (var i = 0; i < numberOfColumns; i++) {
                 var currentColumn = dataView.fields[i];
                 var currentDisplayName = nameDisplaynameMap[currentColumn];
+                var specialColumnHeader = ["ID", "Titel", "Name", "Bearbeiten"];
+                console.log(currentDisplayName);
                 displayedColumns.push(currentDisplayName);
                 displayNameColumnNumberMap[currentDisplayName] = i;
-            };
-            for (var i = 0; i < numberOfColumns; i++) {
-                $("#table").find("thead").find("tr").append('<th><select name="' + displayedColumns[i] + '" multiple></th>');
+                if (specialColumnHeader.indexOf(displayedColumns[i]) !== -1) {
+                    $("#table").find("thead").find("tr").append('<th>' + displayedColumns[i] + '</th>');
+                } else {
+                    $("#table").find("thead").find("tr").append('<th><select name="' + displayedColumns[i] + '" multiple></select></th>');
+                }
             };
             $SP().list("Prüfberichte").get(function(data) {
+                //fill in the data 
                 var numberOfRows = data.length;
                 for (var i = 0; i < numberOfRows; i++) {
                     var $tablebody = $("#table").find("tbody");
@@ -48,6 +56,7 @@ $(document).ready(function() {
                     $tablebody.append("</tr>");
                 };
                 $("select").each(function(index, value) {
+                    //create dropdown menus for each element in table head
                     var currentColumnDisplayName = $(this).attr('name');
                     var currentColumnName = displaynameNameMap[currentColumnDisplayName];
                     var currentDropDownValues = valuesForDropDown[currentColumnName];
@@ -64,6 +73,7 @@ $(document).ready(function() {
                         var selectedValues = $(this).val();
                         var propertyName = $(this).attr('name');
                         var columnNumber = displayNameColumnNumberMap[propertyName];
+                        $(this).chosen();
                         console.log(selectedValues);
                         if (selectedValues !== null) {
                             filterBy[columnNumber] = selectedValues;

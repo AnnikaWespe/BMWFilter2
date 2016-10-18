@@ -10,7 +10,7 @@ $(document).ready(function() {
             var key = fields[i]["Name"];
             var value = fields[i]["DisplayName"];
             nameDisplaynameMap[key] = value;
-            valuesForDropDown[key] = [];
+            valuesForDropDown[value] = [];
         };
 
         $SP().list("Prüfberichte").view("Alle Dokumente", function(dataView, viewID) {
@@ -19,29 +19,46 @@ $(document).ready(function() {
                 console.log(displayedColumn);
                 displayedColumns.push(nameDisplaynameMap[displayedColumn]);
             };
+
+            /*<select name="cars" multiple>
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="opel">Opel</option>
+              <option value="audi">Audi</option>
+            </select>*/
+
             var lengthDisplayedColumns = displayedColumns.length;
             for (var i = 0; i < lengthDisplayedColumns; i++) {
-                $("#table").find("thead").find("tr").append("<th>" + displayedColumns[i] + "</th>");
+                $("#table").find("thead").find("tr").append('<th><select name="' + displayedColumns[i] + '" multiple><option value="volvo">Volvo</option></th>');
             };
             $SP().list("Prüfberichte").get(function(data) {
-                for (var i = 0; i < data.length; i++) {
-                    var tablebody = $("#table").find("tbody");
-                    tablebody.append("<tr>");
-                    for (var j = 0; j < dataView.fields.length; j++) {
+                var numberOfRows = data.length;
+                for (var i = 0; i < numberOfRows; i++) {
+                    var $tablebody = $("#table").find("tbody");
+                    var numberOfColumns = dataView.fields.length;
+                    $tablebody.append("<tr>");
+                    for (var j = 0; j < numberOfColumns; j++) {
                         var currentColumnName = dataView.fields[j];
                         var currentEntry = data[i].getAttribute(currentColumnName);
                         if (currentColumnName == "LinkFilename") {
-                            tablebody.append('<td><a href="/sites/GWTZ/Prfberichte/' + currentEntry + '">' + currentEntry + "</a></td> ");
+                            $tablebody.append('<td><a href="/sites/GWTZ/Prfberichte/' + currentEntry + '">' + currentEntry + "</a></td> ");
                         } else {
-                            tablebody.append("<td>" + currentEntry + "</td>");
+                            $tablebody.append("<td>" + currentEntry + "</td>");
                         };
                         if (valuesForDropDown[currentColumnName].indexOf(currentEntry) == -1) {
-                            valuesForDropDown[currentColumnName].push(currentEntry)
+                            valuesForDropDown[nameDisplaynameMap[currentColumnName]].push(nameDisplaynameMap[currentEntry]);
                         };
                     };
-                    tablebody.append("</tr>");
+                    $tablebody.append("</tr>");
                 };
-
+                $("select").each(function(index, value) {
+                    var $currentName = $(this).attr('name');
+                    var currentDropDownValues = valuesForDropDown[$currentName];
+                    var currentDropDownValuesLength = currentDropDownValues.length;
+                    for (var i = 0; i < currentDropDownValuesLength; i++) {
+                        $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
+                    }
+                })
             });
         });
     });

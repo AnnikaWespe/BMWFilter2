@@ -23,7 +23,6 @@ $(document).ready(function() {
                 var currentDisplayName = nameDisplaynameMap[currentColumn];
                 displayedColumns.push(currentDisplayName);
                 displayNameColumnNumberMap[currentDisplayName] = i;
-                console.log("displayNameColumnNumberMap:" + displayNameColumnNumberMap[currentDisplayName]);
             };
             for (var i = 0; i < numberOfColumns; i++) {
                 $("#table").find("thead").find("tr").append('<th><select name="' + displayedColumns[i] + '" multiple></th>');
@@ -36,10 +35,11 @@ $(document).ready(function() {
                     for (var j = 0; j < dataView.fields.length; j++) {
                         var currentColumnName = dataView.fields[j];
                         var currentEntry = data[i].getAttribute(currentColumnName);
+                        var currentPosition = "row" + i + "column" + j;
                         if (currentColumnName == "LinkFilename") {
-                            $tablebody.append('<td><a href="/sites/GWTZ/Prfberichte/' + currentEntry + '">' + currentEntry + "</a></td> ");
+                            $tablebody.append('<td id="' + currentPosition + '"><a href="/sites/GWTZ/Prfberichte/' + currentEntry + '">' + currentEntry + "</a></td> ");
                         } else {
-                            $tablebody.append("<td>" + currentEntry + "</td>");
+                            $tablebody.append('<td id="' + currentPosition + '">' + currentEntry + "</td>");
                         };
                         if (valuesForDropDown[currentColumnName].indexOf(currentEntry) == -1) {
                             valuesForDropDown[currentColumnName].push(currentEntry);
@@ -76,11 +76,16 @@ $(document).ready(function() {
                     } else {
                         for (var i = 0; i < numberOfProperties; i++) {
                             console.log(filterBy[selectedProperties[i]] + "und die Spaltennummer ist" + selectedProperties[i]);
-                            $("#table").find("td:nth-child(1)").each(function() {
-                                console.log("hey!");
-                            });
+                            for (var j = 0; j < numberOfRows; j++) {
+                                if (filterBy[selectedProperties[i]].indexOf($("#row" + j + "column" + selectedProperties[i]).html()) == -1) {
+                                    $("[id*='row" + j + "']").hide();
+                                }
+                            }
                         }
                     }
+                });
+                $("#filterReset").click(function() {
+                    $("[id*='row']").show();
                 })
             });
         });

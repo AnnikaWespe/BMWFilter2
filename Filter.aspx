@@ -14,9 +14,9 @@
       <tr></tr>
     </thead>
     <tbody>
-    	<tr><td>asdf</td><td>asdf</td></tr>
     </tbody>
   </table>
 <button class="btn btn-primary active" id="filter">Filter anwenden/Apply Filter</button>
+<button class="btn btn-primary active" id="filterReset">Filter reset</button>
 </body>
 </html>

@@ -13,8 +13,10 @@
     <thead>
       <tr></tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+    	<tr><td>asdf</td><td>asdf</td></tr>
+    </tbody>
   </table>
-
+<button class="btn btn-primary active" id="filter">Filter anwenden/Apply Filter</button>
 </body>
 </html>

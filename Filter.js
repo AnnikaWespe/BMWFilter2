@@ -23,8 +23,7 @@
               for (var i = 0; i < numberOfColumns; i++) {
                   var currentColumn = dataView.fields[i];
                   var currentDisplayName = nameDisplaynameMap[currentColumn];
-                  var columnHeaderNoDropdown = ["ID", "Titel", "Name", "Bearbeiten"];
-                  console.log(currentDisplayName);
+                  var columnHeaderNoDropdown = ["ID", "Titel", "Bearbeiten"];
                   displayedColumns.push(currentDisplayName);
                   displayNameColumnNumberMap[currentDisplayName] = i;
                   if (columnHeaderNoDropdown.indexOf(displayedColumns[i]) !== -1) {
@@ -46,7 +45,6 @@
                           var currentEntry = data[i].getAttribute(currentColumnName);
                           var currentPosition = "row" + i + "column" + j;
                           var currentID;
-                          console.log(currentColumnName);
                           if (currentColumnName == "ID") {
                               currentID = currentEntry;
                           };
@@ -59,6 +57,7 @@
                           };
                           if (valuesForDropDown[currentColumnName].indexOf(currentEntry) == -1) {
                               valuesForDropDown[currentColumnName].push(currentEntry);
+                              console.log("valuesForDropDown: " + currentColumnName + valuesForDropDown[currentColumnName]);
                           };
                       };
                       $tablebody.append("</tr>");
@@ -68,12 +67,13 @@
                       var currentColumnDisplayName = $(this).attr('name');
                       var currentColumnName = displaynameNameMap[currentColumnDisplayName];
                       var currentDropDownValues = valuesForDropDown[currentColumnName];
+                      console.log("currentColumnDisplayName: " + currentColumnDisplayName);
                       var numberOfOptions = currentDropDownValues.length;
                       for (var i = 0; i < numberOfOptions; i++) {
                           $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
                       }
                       $(this).chosen();
-
+                      console.log($(this).html());
                   });
                   $("#filter").click(function() {
                       var filterBy = {};
@@ -83,7 +83,6 @@
                           var propertyName = $(this).attr('name');
                           var columnNumber = displayNameColumnNumberMap[propertyName];
                           $(this).chosen();
-                          console.log(selectedValues);
                           if (selectedValues !== null) {
                               filterBy[columnNumber] = selectedValues;
                               selectedProperties.push(columnNumber);
@@ -94,7 +93,6 @@
                           alert("Bitte wählen Sie mindestens ein Filterkriterium aus!\n\nPlease select at least one property to filter by!")
                       } else {
                           for (var i = 0; i < numberOfProperties; i++) {
-                              console.log(filterBy[selectedProperties[i]] + "und die Spaltennummer ist" + selectedProperties[i]);
                               for (var j = 0; j < numberOfRows; j++) {
                                   if (filterBy[selectedProperties[i]].indexOf($("#row" + j + "column" + selectedProperties[i]).html()) == -1) {
                                       $("[id*='row" + j + "']").hide();

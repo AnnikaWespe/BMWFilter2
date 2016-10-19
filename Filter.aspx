@@ -16,8 +16,6 @@
       <tr></tr>
     </thead>
     <tbody>
-    <select id="dummySelect"><option>asdf</option><option>asdf</option></select>
-    </tbody>
   </table>
 <button class="btn btn-primary active" id="filter">Filter anwenden/Apply Filter</button>
 <button class="btn btn-primary active" id="filterReset">Filter reset</button>

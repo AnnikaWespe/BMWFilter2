@@ -23,7 +23,7 @@
               for (var i = 0; i < numberOfColumns; i++) {
                   var currentColumn = dataView.fields[i];
                   var currentDisplayName = nameDisplaynameMap[currentColumn];
-                  var columnHeaderNoDropdown = ["ID", "Titel", "Bearbeiten"];
+                  var columnHeaderNoDropdown = ["ID", "Bearbeiten"];
                   displayedColumns.push(currentDisplayName);
                   displayNameColumnNumberMap[currentDisplayName] = i;
                   if (columnHeaderNoDropdown.indexOf(displayedColumns[i]) !== -1) {
@@ -57,7 +57,6 @@
                           };
                           if (valuesForDropDown[currentColumnName].indexOf(currentEntry) == -1) {
                               valuesForDropDown[currentColumnName].push(currentEntry);
-                              console.log("valuesForDropDown: " + currentColumnName + valuesForDropDown[currentColumnName]);
                           };
                       };
                       $tablebody.append("</tr>");
@@ -67,23 +66,34 @@
                       var currentColumnDisplayName = $(this).attr('name');
                       var currentColumnName = displaynameNameMap[currentColumnDisplayName];
                       var currentDropDownValues = valuesForDropDown[currentColumnName];
-                      console.log("currentColumnDisplayName: " + currentColumnDisplayName);
+                      if (currentColumnDisplayName == "Name") {
+                          currentDropDownValues = valuesForDropDown["LinkFilename"]
+                      };
                       var numberOfOptions = currentDropDownValues.length;
                       for (var i = 0; i < numberOfOptions; i++) {
                           $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
-                      }
+                      };
                       $(this).chosen();
-                      console.log($(this).html());
                   });
                   $("#filter").click(function() {
                       var filterBy = {};
                       var selectedProperties = [];
                       $("select").each(function() {
                           var selectedValues = $(this).val();
+                          console.log(selectedValues);
                           var propertyName = $(this).attr('name');
+                          console.log(propertyName);
                           var columnNumber = displayNameColumnNumberMap[propertyName];
+                          console.log(columnNumber);
                           $(this).chosen();
                           if (selectedValues !== null) {
+                              if (currentColumnDisplayName = "Name") {
+                                  var helperArray = [];
+                                  for (var i = 0; i < selectedValues.length; i++) {
+                                      helperArray.push('<a href="/sites/GWTZ/Prfberichte/' + selectedValues[i] + '" target="_blank">' + selectedValues[i] + '</a>');
+                                  };
+                                  selectedValues = helperArray;
+                              }
                               filterBy[columnNumber] = selectedValues;
                               selectedProperties.push(columnNumber);
                           }
@@ -94,7 +104,9 @@
                       } else {
                           for (var i = 0; i < numberOfProperties; i++) {
                               for (var j = 0; j < numberOfRows; j++) {
-                                  if (filterBy[selectedProperties[i]].indexOf($("#row" + j + "column" + selectedProperties[i]).html()) == -1) {
+                                  var currentEntryQuery = $("#row" + j + "column" + selectedProperties[i]).html();
+                                  console.log($("#row" + j + "column" + selectedProperties[i]).html());
+                                  if (filterBy[selectedProperties[i]].indexOf(currentEntryQuery) == -1) {
                                       $("[id*='row" + j + "']").hide();
                                   }
                               }

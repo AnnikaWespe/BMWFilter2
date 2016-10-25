@@ -3,6 +3,7 @@ $(document).ready(function() {
     var website;
     var myList;
     var items;
+
     SP.SOD.executeFunc('sp.js', 'SP.ClientContext', sharePointReady);
 
     function sharePointReady() {
@@ -15,7 +16,8 @@ $(document).ready(function() {
     function onRequestSucceeded() {
         alert(website.get_url());
         myList = website.get_lists().getByTitle("Prüfberichte");
-        var query = '<View><RowLimit>100</RowLimit></View>';
+        var query = "<View><Query><Where><Geq><FieldRef Name='ID'/>" +
+            "<Value Type='Number'>10</Value></Geq></Where></Query><RowLimit>100</RowLimit></View>"
         camlQuery = new SP.CamlQuery();
         camlQuery.set_viewXml(query);
         items = myList.getItems(camlQuery);

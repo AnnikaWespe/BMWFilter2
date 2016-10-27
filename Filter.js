@@ -8,6 +8,7 @@ $(document).ready(function() {
         var displayedColumns = [];
         var valuesForDropDown = {};
         var displayNameColumnNumberMap = {};
+        var valuesBerichtsNr = [];
         //creating maps so we can get SP name of column from displayed name and vice versa
         for (var i = 0; i < fields.length; i++) {
             var key = fields[i]["Name"];
@@ -18,14 +19,19 @@ $(document).ready(function() {
         };
 
         $SP().list("Prüfberichte").view("Alle Dokumente", function(dataView, viewID) {
-            //create the array to fill the table head
+            //create the array to fill the select fields and table head
             var numberOfColumns = dataView.fields.length;
             for (var i = 0; i < numberOfColumns; i++) {
                 var currentColumn = dataView.fields[i];
                 var currentDisplayName = nameDisplaynameMap[currentColumn];
+                var columnsEnterVonBis = ["Berichts-Nr."]
                 displayedColumns.push(currentDisplayName);
                 displayNameColumnNumberMap[currentDisplayName] = i;
-                $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></div>'); -
+                if (columnsEnterVonBis.indexOf(currentDisplayName) !== -1) {
+                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><input placeholder="' + displayedColumns[i] + ' (von-bis)" name="' + displayedColumns[i] + '" type = "text"></div>');
+                } else {
+                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></div>');
+                };
                 $("#table").find("thead").find("tr").append('<th id="column' + i + '">' + currentDisplayName + '</th>');
             };
             $("#column0").hide();
@@ -43,11 +49,15 @@ $(document).ready(function() {
                         var currentPosition = "row" + i + "column" + j;
                         if (j == 1 && currentEntry) {
                             if (currentEntry.indexOf(",")) {
+                                var helperArray;
                                 nameAndLinkArray = currentEntry.split(",");
-                                alert("nameAndLinkArray[0]: " + nameAndLinkArray[0] + "\nnameAndLinkArray[1]: " + nameAndLinkArray[1]);
                                 currentEntry = nameAndLinkArray[1];
                                 currentLinkToFile = nameAndLinkArray[0];
                                 stringToAppend += '<td id="' + currentPosition + '">' + '<a href="' + currentLinkToFile + '">' + currentEntry + '</a></td>';
+                                helperArray = currentEntry.split("_");
+                                currentEntry = helperArray[0] + helperArray[1];
+                                console.log(currentEntry);
+                                valuesBerichtsNr[i] = currentEntry;
                             }
                         } else {
                             stringToAppend += '<td id="' + currentPosition + '">' + currentEntry + "</td>";
@@ -101,6 +111,7 @@ $(document).ready(function() {
                 $("#filterReset").click(function() {
                     $("[id*='row']").show();
                     $(".search-choice-close").click();
+                    $("[id*='column0']").hide();
                 })
             });
         });

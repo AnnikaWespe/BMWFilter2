@@ -25,12 +25,7 @@ $(document).ready(function() {
                 var currentDisplayName = nameDisplaynameMap[currentColumn];
                 displayedColumns.push(currentDisplayName);
                 displayNameColumnNumberMap[currentDisplayName] = i;
-                if (i == 0) {
-                    $("#table").find("thead").find("tr").append('<th><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></th>').hide();
-                } else {
-                    $("#table").find("thead").find("tr").append('<th><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></th>');
-
-                }
+                $("#selectBox").append('<div class="col-md-3"><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></div>');
             };
 
             $SP().list("Prüfberichte").get(function(data) {
@@ -45,17 +40,7 @@ $(document).ready(function() {
                         var currentColumnName = dataView.fields[j];
                         var currentEntry = data[i].getAttribute(currentColumnName);
                         var currentPosition = "row" + i + "column" + j;
-                        var currentID;
-                        if (currentColumnName == "ID") {
-                            currentID = currentEntry;
-                        };
-                        if (currentColumnName == "LinkFilename") {
-                            $tablebody.append('<td id="' + currentPosition + '"><a target="_blank" href="/sites/GWTZ/Prfberichte/' + currentEntry + '">' + currentEntry + "</a></td> ");
-                        } else if (currentColumnName == "Edit") {
-                            $tablebody.append('<td id="' + currentPosition + '"><a target="_blank" href="' + UrlSnippetForEdit1 + currentID + UrlSnippetForEdit2 + '"> Bearbeiten / Edit </a></td>');
-                        } else {
-                            $tablebody.append('<td id="' + currentPosition + '">' + currentEntry + "</td>");
-                        };
+                        $tablebody.append('<td id="' + currentPosition + '">' + currentEntry + "</td>");
                         if (valuesForDropDown[currentColumnName].indexOf(currentEntry) == -1) {
                             valuesForDropDown[currentColumnName].push(currentEntry);
                             console.log("valuesForDropDown: " + currentColumnName + valuesForDropDown[currentColumnName]);

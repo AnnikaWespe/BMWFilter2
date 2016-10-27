@@ -25,41 +25,53 @@ $(document).ready(function() {
                 var currentDisplayName = nameDisplaynameMap[currentColumn];
                 displayedColumns.push(currentDisplayName);
                 displayNameColumnNumberMap[currentDisplayName] = i;
-                $("#selectBox").append('<div class="col-md-3"><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></div>');
+                $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></div>'); -
+                $("#table").find("thead").find("tr").append('<th id="column' + i + '">' + currentDisplayName + '</th>');
             };
-
+            $("#column0").hide();
             $SP().list("Prüfberichte").get(function(data) {
                 //fill in the data 
                 var numberOfRows = data.length;
-                var UrlSnippetForEdit1 = "/sites/GWTZ/Prfberichte/Forms/EditForm.aspx?ID=";
-                var UrlSnippetForEdit2 = "&Source=https%3A%2F%2Fvts5%2Ebmwgroup%2Enet%2Fsites%2FGWTZ%2FPrfberichte%2FForms%2FAllItems%2Easpx";
+                var $tablebody = $("#table").find("tbody");
                 for (var i = 0; i < numberOfRows; i++) {
-                    var $tablebody = $("#table").find("tbody");
-                    $tablebody.append("<tr>");
+                    var stringToAppend = '<tr>';
                     for (var j = 0; j < dataView.fields.length; j++) {
                         var currentColumnName = dataView.fields[j];
                         var currentEntry = data[i].getAttribute(currentColumnName);
+                        var currentLinkToFile;
+                        var nameAndLinkArray;
                         var currentPosition = "row" + i + "column" + j;
-                        $tablebody.append('<td id="' + currentPosition + '">' + currentEntry + "</td>");
+                        if (j == 1 && currentEntry) {
+                            if (currentEntry.indexOf(",")) {
+                                nameAndLinkArray = currentEntry.split(",");
+                                alert("nameAndLinkArray[0]: " + nameAndLinkArray[0] + "\nnameAndLinkArray[1]: " + nameAndLinkArray[1]);
+                                currentEntry = nameAndLinkArray[1];
+                                currentLinkToFile = nameAndLinkArray[0];
+                                stringToAppend += '<td id="' + currentPosition + '">' + '<a href="' + currentLinkToFile + '">' + currentEntry + '</a></td>';
+                            }
+                        } else {
+                            stringToAppend += '<td id="' + currentPosition + '">' + currentEntry + "</td>";
+                        };
                         if (valuesForDropDown[currentColumnName].indexOf(currentEntry) == -1) {
                             valuesForDropDown[currentColumnName].push(currentEntry);
-                            console.log("valuesForDropDown: " + currentColumnName + valuesForDropDown[currentColumnName]);
                         };
                     };
-                    $tablebody.append("</tr>");
+                    stringToAppend += '</tr>';
+                    $tablebody.append(stringToAppend);
                 };
+                $("[id*='column0']").hide();
                 $("select").each(function(index, value) {
                     //create dropdown menus for each element in table head
                     var currentColumnDisplayName = $(this).attr('name');
                     var currentColumnName = displaynameNameMap[currentColumnDisplayName];
                     var currentDropDownValues = valuesForDropDown[currentColumnName];
-                    console.log("currentColumnDisplayName: " + currentColumnDisplayName);
                     var numberOfOptions = currentDropDownValues.length;
                     for (var i = 0; i < numberOfOptions; i++) {
                         $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
-                    }
-                    $(this).chosen();
-                    console.log($(this).html());
+                    };
+                    $(this).chosen({
+                        width: "98%"
+                    });
                 });
                 $("#filter").click(function() {
                     var filterBy = {};
@@ -68,7 +80,6 @@ $(document).ready(function() {
                         var selectedValues = $(this).val();
                         var propertyName = $(this).attr('name');
                         var columnNumber = displayNameColumnNumberMap[propertyName];
-                        $(this).chosen();
                         if (selectedValues !== null) {
                             filterBy[columnNumber] = selectedValues;
                             selectedProperties.push(columnNumber);

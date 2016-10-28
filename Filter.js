@@ -1,6 +1,3 @@
-var columns = {
-    bmwSach: "BMW_x002d_Sach_x002d_Nr_x002e__x0020__x0028_BMW_x0020_part_x0020_number_x0029_"
-};
 $(document).ready(function() {
     $SP().list("Prüfberichte").info(function(fields) {
         var nameDisplaynameMap = {};
@@ -24,13 +21,23 @@ $(document).ready(function() {
             for (var i = 0; i < numberOfColumns; i++) {
                 var currentColumn = dataView.fields[i];
                 var currentDisplayName = nameDisplaynameMap[currentColumn];
-                var columnsEnterVonBis = ["Berichts-Nr."]
+                var columnsEnterVonBis = ["Berichts-Nr.", "km-Stand (Mileage)", "Prod.-Datum Fzg. (Production date)"];
+                var placeholder = {};
+                placeholder["Berichts-Nr."] = "yyyy_xxxx-yyyy_xxxx";
+                placeholder["km-Stand (Mileage)"] = "Eingabe ohne (.) und (,) / Enter without (.) or (,)";
+                placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
                 displayedColumns.push(currentDisplayName);
                 displayNameColumnNumberMap[currentDisplayName] = i;
                 if (columnsEnterVonBis.indexOf(currentDisplayName) !== -1) {
-                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><input class="inputVonBis" placeholder="' + displayedColumns[i] + ' (von-bis)" name="' + displayedColumns[i] + '" type = "text" id="berichtsNrInput"></div>');
+                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><label for="inputVonBis' +
+                        displayedColumns[i] + '">' + displayedColumns[i] + '</label><input class="inputVonBis" id="inputVonBis' +
+                        displayedColumns[i] + '" placeholder="' + placeholder[displayedColumns[i]] + '" name="' +
+                        displayedColumns[i] + '" type = "text" id="berichtsNrInput"></div>');
                 } else {
-                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></div>');
+                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><label for="select' + displayedColumns[i] +
+                        '">' + displayedColumns[i] + '</label><select id="select' + displayedColumns[i] +
+                        '" data-placeholder="auswählen / select" name="' + displayedColumns[i] +
+                        '" multiple class="chosen-select"></select></div>');
                 };
                 $("#table").find("thead").find("tr").append('<th id="column' + i + '">' + currentDisplayName + '</th>');
             };
@@ -40,7 +47,7 @@ $(document).ready(function() {
                 var numberOfRows = data.length;
                 var $tablebody = $("#table").find("tbody");
                 for (var i = 0; i < numberOfRows; i++) {
-                    var stringToAppend = '<tr>';
+                    var stringToAppend = '<tr id="row' + i + '" class = "tablerow">';
                     for (var j = 0; j < dataView.fields.length; j++) {
                         var currentColumnName = dataView.fields[j];
                         var currentEntry = data[i].getAttribute(currentColumnName);
@@ -80,7 +87,7 @@ $(document).ready(function() {
                         $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
                     };
                     $(this).chosen({
-                        width: "98%"
+                        width: "100%"
                     });
                 });
                 $("#filter").click(function() {
@@ -102,11 +109,14 @@ $(document).ready(function() {
                         for (var i = 0; i < numberOfProperties; i++) {
                             for (var j = 0; j < numberOfRows; j++) {
                                 if (filterBy[selectedProperties[i]].indexOf($("#row" + j + "column" + selectedProperties[i]).html()) == -1) {
-                                    $("[id*='row" + j + "']").hide();
+                                    $("#row" + j).hide();
                                 }
                             }
                         }
                     };
+                    var numberOfRowsjQuery = $(".tablerow").length();
+                    alert(numberOfRowsjQuery);
+                    alert($('tr[style*="display: none"]').find.length());
                     var berichtsNrInput = $('#berichtsNrInput').val();
                 });
                 $("#filterReset").click(function() {

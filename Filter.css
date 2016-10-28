@@ -1,0 +1,15 @@
+.inputVonBis{
+	position: relative;
+	overflow: hidden;
+	margin: 0;
+	padding: 0 0 0 5px;
+	width: 100%;
+	height: auto;
+	border: 1px solid #aaa;
+	background-color: #fff;
+	background-image: linear-gradient(#eeeeee 1%, #ffffff 15%);
+	cursor: text;
+	box-sizing: border-box;
+	font-size: 13px;
+	height: 25px;
+}

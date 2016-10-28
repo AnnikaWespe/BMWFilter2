@@ -28,7 +28,7 @@ $(document).ready(function() {
                 displayedColumns.push(currentDisplayName);
                 displayNameColumnNumberMap[currentDisplayName] = i;
                 if (columnsEnterVonBis.indexOf(currentDisplayName) !== -1) {
-                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><input placeholder="' + displayedColumns[i] + ' (von-bis)" name="' + displayedColumns[i] + '" type = "text"></div>');
+                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><input class="inputVonBis" placeholder="' + displayedColumns[i] + ' (von-bis)" name="' + displayedColumns[i] + '" type = "text" id="berichtsNrInput"></div>');
                 } else {
                     $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><select data-placeholder="' + displayedColumns[i] + '" name="' + displayedColumns[i] + '" multiple class="chosen-select"></select></div>');
                 };
@@ -106,7 +106,8 @@ $(document).ready(function() {
                                 }
                             }
                         }
-                    }
+                    };
+                    var berichtsNrInput = $('#berichtsNrInput').val();
                 });
                 $("#filterReset").click(function() {
                     $("[id*='row']").show();

@@ -124,17 +124,26 @@ $(document).ready(function() {
                     $("[id*='column0']").hide();
                     $("#numberOfResults").html("Anzahl Ergebnisse");
                 });
-                $("#inputVonBisBerichts-Nr\\.").focusout(function() {
-                    if ($(this).val() != '') {
-                        var inputValue = $(this).val();
-                        var testRegExp = /\d\d\d\d_\d\d\d\d-\d\d\d\d_\d\d\d\d/;
-                        var res = testRegExp.test(inputValue);
-                        if (!res) {
-                            alert("this doesn't work");
-                        }
-                    }
-                });
+                $("#inputVonBisBerichts-Nr\\.").focusout(checkBerichtsNr);
+                $("#inputVonBisProd\\.\\-Datum\\ Fzg\\.\\ \\(Production\\ date\\)").focusout(checkDatum);
             });
         });
     });
+    var checkBerichtsNr = function() {
+        var inputToBeChecked = $("#inputVonBisBerichts-Nr\\.").val();
+        if (inputToBeChecked != '') {
+            var testRegExp = /\d\d\d\d_\d\d\d\d-\d\d\d\d_\d\d\d\d/;
+            var res = testRegExp.test(inputToBeChecked);
+            if (!res) {
+                alert("Bitte geben Sie den Bereich für die Berichts-Nr. ohne Leerzeichen ein." +
+                    "\nPlease enter the range for the report number w/o blanks.\n\nExamples:\n\n2016_0001-2017_0001\n\n2017_1234-2017_1234");
+            }
+        }
+    }
+    var checkDatum = function() {
+        var inputToBeChecked = $("#inputVonBisProd\\.\\ \\-\\ Datum\\ Fzg\\.\\(Production\\ date\\)").val();
+        if (inputToBeChecked != '') {
+            alert(inputToBeChecked);
+        }
+    }
 });

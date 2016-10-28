@@ -17,7 +17,7 @@
 		</div>
 		<button class="btn btn-primary active" id="filter">Filter anwenden/Apply Filter</button>
 		<button class="btn btn-primary active" id="filterReset">Filter reset</button>
-		<button class="btn btn-primary" disabled id="numberOfResults">Anzahl Ergebnisse</button>
+		<button class="btn btn-primary disabled_special" disabled id="numberOfResults">Anzahl Ergebnisse</button>
 		<table class="table table-striped" id="table">
 			<thead>
 			<tr></tr>

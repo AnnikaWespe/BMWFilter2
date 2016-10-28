@@ -38,6 +38,6 @@ label{
  .btn{
  	margin-top: 8px;
  }
-button.disabled{
+button.disabled_special{
 	cursor: text; 
 }

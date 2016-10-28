@@ -83,12 +83,12 @@ $(document).ready(function() {
                     var currentColumnName = displaynameNameMap[currentColumnDisplayName];
                     var currentDropDownValues = valuesForDropDown[currentColumnName];
                     var numberOfOptions = currentDropDownValues.length;
-                    for (var i = 0; i < numberOfOptions; i++) {
-                        $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
-                    };
                     $(this).chosen({
                         width: "100%"
                     });
+                    for (var i = 0; i < numberOfOptions; i++) {
+                        $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
+                    };
                 });
                 $("#filter").click(function() {
                     var filterBy = {};
@@ -114,16 +114,26 @@ $(document).ready(function() {
                             }
                         }
                     };
-                    var numberOfRowsjQuery = $(".tablerow").length();
-                    alert(numberOfRowsjQuery);
-                    alert($('tr[style*="display: none"]').find.length());
-                    var berichtsNrInput = $('#berichtsNrInput').val();
+
+                    var numberOfRowsjQuery = $(".tablerow:visible").not('[style *= "display:none"]').length;
+                    $("#numberOfResults").append(": " + numberOfRowsjQuery);
                 });
                 $("#filterReset").click(function() {
                     $("[id*='row']").show();
                     $(".search-choice-close").click();
                     $("[id*='column0']").hide();
-                })
+                    $("#numberOfResults").html("Anzahl Ergebnisse");
+                });
+                $("#inputVonBisBerichts-Nr\\.").focusout(function() {
+                    if ($(this).val() != '') {
+                        var inputValue = $(this).val();
+                        var testRegExp = /\d\d\d\d_\d\d\d\d-\d\d\d\d_\d\d\d\d/;
+                        var res = testRegExp.test(inputValue);
+                        if (!res) {
+                            alert("this doesn't work");
+                        }
+                    }
+                });
             });
         });
     });

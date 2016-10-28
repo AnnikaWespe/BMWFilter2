@@ -83,12 +83,12 @@ $(document).ready(function() {
                     var currentColumnName = displaynameNameMap[currentColumnDisplayName];
                     var currentDropDownValues = valuesForDropDown[currentColumnName];
                     var numberOfOptions = currentDropDownValues.length;
-                    $(this).chosen({
-                        width: "100%"
-                    });
                     for (var i = 0; i < numberOfOptions; i++) {
                         $(this).append('<option value="' + currentDropDownValues[i] + '">' + currentDropDownValues[i] + '</option>')
                     };
+                    $(this).chosen({
+                        width: "100%"
+                    });
                 });
                 $("#filter").click(function() {
                     var filterBy = {};
@@ -114,9 +114,9 @@ $(document).ready(function() {
                             }
                         }
                     };
-
                     var numberOfRowsjQuery = $(".tablerow:visible").not('[style *= "display:none"]').length;
                     $("#numberOfResults").append(": " + numberOfRowsjQuery);
+                    var berichtsNrInput = $('#berichtsNrInput').val();
                 });
                 $("#filterReset").click(function() {
                     $("[id*='row']").show();

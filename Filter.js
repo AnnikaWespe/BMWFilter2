@@ -4,12 +4,15 @@ var mileageInputField = "#inputVonBiskm\\-Stand\\ \\(Mileage\\)";
 var berichtsNrInputField = "#inputVonBisBerichts-Nr\\.";
 var placeholder = {};
 placeholder["Berichts-Nr."] = "yyyy_xxxx-yyyy_xxxx";
-placeholder["km-Stand (Mileage)"] = "Eingabe ohne (.) und (,) / Enter without (.) or (,)";
+placeholder["km-Stand (Mileage)"] = "in Tausend / in thousands";
 placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
 var noPropertiesAlert = "Bitte wählen Sie mindestens ein Filterkriterium aus!\n\nPlease select at least one property to filter by!";
 var BerichtsNrInputAlert = "Feld Berichts-Nr.:\n\nBitte geben Sie den Bereich für die Berichts-Nr. ohne Leerzeichen ein.\nPlease enter the range for the report number w/o blanks.\n\nExamples:\n\n2016_0001-2017_0001\n\n2017_1234-2017_1234";
 var dateAlert = "Feld Produktionsdatum / production date:\n\nBitte geben Sie Start- und Enddatum im Format tt.mm.jjjj ein.\nPlease enter the start and end date in the format dd.mm.yyyy\n\nExample:\n\n01.01.2016-01.01.2017";
 var mileageAlert = "Feld km-Stand / mileage: \n\nBitte geben Sie eine ganze Zahl ohne (.) oder (,) ein\nPlease enter a whole number (no decimals) without (.) or (,)";
+var imageInfoSign = "  <img src='/sites/GWTZ/scripts/Informationsign.png' height='16px' width='16px'>"
+    //set time format to German
+moment.locale("de");
 
 
 $(document).ready(function() {
@@ -54,6 +57,7 @@ $(document).ready(function() {
                 $("#table").find("thead").find("tr").append('<th id="column' + i + '">' + currentDisplayName + '</th>');
             };
             $("#column0").hide();
+            $('label[for="inputVonBiskm\\-Stand\\ \\(Mileage\\)"]').append(imageInfoSign);
             $SP().list("Prüfberichte").get(function(data) {
                 //fill in the data 
                 var numberOfRows = data.length;
@@ -82,7 +86,7 @@ $(document).ready(function() {
                         } else {
                             if (j == 2 && currentEntry) {
                                 var date = moment(currentEntry);
-                                console.log(date);
+                                currentEntry = date.format('L')
                             } else if (j == 10 && currentEntry) {
                                 var helperArray = currentEntry.split(".");
                                 currentEntry = helperArray[0];
@@ -114,6 +118,9 @@ $(document).ready(function() {
                     var filterBy = {};
                     var selectedProperties = [];
                     var numberOfProperties;
+                    var berichtsNrInput = $(berichtsNrInputField).val();
+                    var mileageInput = $(mileageInputField).val();
+                    var dateInput = $(productionDateInputField).val();
                     if (checkBerichtsNr() && checkDatum() && checkMileage()) {
                         $("select").each(function() {
                             var selectedValues = $(this).val();
@@ -125,7 +132,7 @@ $(document).ready(function() {
                             }
                         });
                         numberOfProperties = selectedProperties.length;
-                        if (numberOfProperties == 0) {
+                        if (numberOfProperties == 0 && !berichtsNrInput && !dateInput && !mileageInput) {
                             alert(noPropertiesAlert)
                         } else {
                             //makes it possible to readjust filter criteria after filter already clicked once
@@ -134,14 +141,40 @@ $(document).ready(function() {
                                 $("#numberOfResults").html("Anzahl Ergebnisse");
                             }
                             //check for each entry if compatible with the selected criteria
-                            for (var i = 0; i < numberOfProperties; i++) {
-                                for (var j = 0; j < numberOfRows; j++) {
-                                    if (filterBy[selectedProperties[i]].indexOf($("#row" + j + "column" + selectedProperties[i]).html()) == -1) {
-                                        $("#row" + j).hide();
+                            if (numberOfProperties) {
+                                for (var i = 0; i < numberOfProperties; i++) {
+                                    for (var j = 0; j < numberOfRows; j++) {
+                                        if (filterBy[selectedProperties[i]].indexOf($("#row" + j + "column" + selectedProperties[i]).html()) == -1) {
+                                            $("#row" + j).hide();
+                                        }
                                     }
                                 }
                             }
-                            //Filter by Berichts-Nr. range
+                            //Filter by Berichts-Nr.
+                            if (berichtsNrInput) {
+                                //get input values as raw number format
+                                var helperArray = berichtsNrInput.split("-");
+                                var berichtsNrInputVon = helperArray[0].split("_");
+                                var berichtsNrInputBis = helperArray[1].split("_");
+                                var berichtsNrVon = new Number(berichtsNrInputVon[0] + berichtsNrInputVon[1]);
+                                var berichtsNrBis = new Number(berichtsNrInputBis[0] + berichtsNrInputBis[1]);
+                                console.log(berichtsNrVon + "     " + berichtsNrBis);
+                                for (var i = 0; i < numberOfRows; i++) {
+                                    var currentNumber = new Number(valuesBerichtsNr[i]);
+                                    if (currentNumber < berichtsNrVon || berichtsNrBis < currentNumber) {
+                                        $("#row" + i).hide();
+                                    }
+                                }
+                            }
+                            //Filter by mileage
+                            if (mileageInput) {
+                                mileageInput = new Number(mileageInput);
+                                for (var i = 0; i < numberOfRows; i++) {
+                                    var currentNumber = new Number($("#row" + i + "column" + 10).html());
+
+                                }
+                            }
+
                             var numberOfRowsjQuery = $(".tablerow:visible").not('[style *= "display:none"]').length;
                             $("#numberOfResults").append(": " + numberOfRowsjQuery);
                             filterAlreadyClicked = 1;

@@ -5,7 +5,7 @@
 		
 		<script src="/sites/GWTZ/scripts/jquery-1.12.4.min.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/chosen.jquery.js" type="text/javascript"></script>
-		<script src="/sites/GWTZ/scripts/moment.js" type="text/javascript"></script>
+		<script src="/sites/GWTZ/scripts/moment-with-locales.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/bootstrap.min.js"></script>
 		<script src="/sites/GWTZ/scripts/sharepointplus-3.13.min.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/Filterfunktion/Filter.js" type="text/javascript"></script>

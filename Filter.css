@@ -41,3 +41,6 @@ label{
 button.disabled_special{
 	cursor: text; 
 }
+button.export{
+	float: right;
+}

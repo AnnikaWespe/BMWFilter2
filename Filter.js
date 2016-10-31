@@ -69,8 +69,9 @@ $(document).ready(function() {
                                 console.log(i + valuesBerichtsNr[i]);
                             }
                         } else {
-                            if (j == 1 && currentEntry) {
-                                currentEntry = Math.floor(currentEntry)
+                            if (j == 10 && currentEntry) {
+                                var helperArray = currentEntry.split(".");
+                                currentEntry = helperArray[0];
                             };
                             stringToAppend += '<td id="' + currentPosition + '">' + currentEntry + "</td>";
                         };

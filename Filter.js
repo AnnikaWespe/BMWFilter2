@@ -10,7 +10,7 @@ var noPropertiesAlert = "Bitte wählen Sie mindestens ein Filterkriterium aus!\n
 var BerichtsNrInputAlert = "Feld Berichts-Nr.:\n\nBitte geben Sie den Bereich für die Berichts-Nr. ohne Leerzeichen ein.\nPlease enter the range for the report number w/o blanks.\n\nExamples:\n\n2016_0001-2017_0001\n\n2017_1234-2017_1234";
 var dateAlert = "Feld Produktionsdatum / production date:\n\nBitte geben Sie Start- und Enddatum im Format tt.mm.jjjj ein.\nPlease enter the start and end date in the format dd.mm.yyyy\n\nExample:\n\n01.01.2016-01.01.2017";
 var mileageAlert = "Feld km-Stand / mileage: \n\nBitte geben Sie eine ganze Zahl ohne (.) oder (,) ein\nPlease enter a whole number (no decimals) without (.) or (,)";
-var imageInfoSign = "  <img src='/sites/GWTZ/scripts/Informationsign.png' height='16px' width='16px'>"
+var imageInfoSignMileage = "  <img src='/sites/GWTZ/scripts/Informationsign.png' height='16px' width='16px' id='kmStandInfo'>"
     //set time format to German
 moment.locale("de");
 
@@ -57,7 +57,7 @@ $(document).ready(function() {
                 $("#table").find("thead").find("tr").append('<th id="column' + i + '">' + currentDisplayName + '</th>');
             };
             $("#column0").hide();
-            $('label[for="inputVonBiskm\\-Stand\\ \\(Mileage\\)"]').append(imageInfoSign);
+            $('label[for="inputVonBiskm\\-Stand\\ \\(Mileage\\)"]').append(imageInfoSignMileage);
             $SP().list("Prüfberichte").get(function(data) {
                 //fill in the data 
                 var numberOfRows = data.length;

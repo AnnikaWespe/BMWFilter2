@@ -11,6 +11,8 @@ var imageInfoSignMileage = "  <img src='/sites/GWTZ/scripts/Informationsign.png'
 var kmStandInfoQtipContent = 'Beispiel: Wollen Sie Stände von 10 000 - 12 000 km abfragen, geben Sie ein: 10-12------------------------------------------------------------------------------------------------------ Example: If you want to retrieve the range from 10 000 - 12 000 km, please enter: 10-12'
 var columnNameProdDat = "Prod_x002e__x002d_Datum_x0020_Fzg_x002e__x0020__x0028_Production_x0020_date_x0029_";
 var columnNameKmStand = "km_x002d_Stand_x0020__x0028_Mileage_x0029_";
+var numberOfRows;
+var numberOfColumns;
 placeholder["Berichts-Nr."] = "yyyy_xxxx-yyyy_xxxx";
 placeholder["km-Stand (Mileage)"] = "von-bis in Tausend / from-to in thousands";
 placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
@@ -38,7 +40,7 @@ $(document).ready(function() {
 
         $SP().list("Prüfberichte").view("Alle Dokumente", function(dataView, viewID) {
             //create the array to fill the select fields and table head
-            var numberOfColumns = dataView.fields.length;
+            numberOfColumns = dataView.fields.length;
             for (var i = 0; i < numberOfColumns; i++) {
                 var currentColumn = dataView.fields[i];
                 var currentDisplayName = nameDisplaynameMap[currentColumn];
@@ -68,7 +70,7 @@ $(document).ready(function() {
             });
             $SP().list("Prüfberichte").get(function(data) {
                 //fill in the data 
-                var numberOfRows = data.length;
+                numberOfRows = data.length;
                 var $tablebody = $("#table").find("tbody");
                 for (var i = 0; i < numberOfRows; i++) {
                     var stringToAppend = '<tr id="row' + i + '" class = "tablerow">';
@@ -217,6 +219,7 @@ $(document).ready(function() {
                     $(".inputVonBis").val('');
                     filterAlreadyClicked = 0;
                 });
+                $("#export").click(getExcel);
                 $(berichtsNrInputField).focusout(checkBerichtsNr);
                 $(productionDateInputField).focusout(checkDatum);
                 $(mileageInputField).focusout(checkMileage);
@@ -257,5 +260,39 @@ $(document).ready(function() {
         } else return true;
     }
 
-    var
+    var getExcel = function() {
+        var data = [];
+        var headerArray = [];
+        for (var i = 1; i < numberOfColumns; i++) {
+            headerArray.push($("th#column" + i).html());
+        };
+        data.push(headerArray);
+        for (var i = 0; i < numberOfRows; i++) {
+            var $currentRow = $("#row" + i);
+            if ($currentRow.is(':visible')) {
+                var currentArray = [];
+                for (var j = 1; j < numberOfColumns; j++) {
+                    currentArray.push($("#row" + i + "column" + j).html());
+                };
+                data.push(currentArray);
+            };
+        };
+        var csvContent; //= "data:text/csv;charset=utf-8,";
+        data.forEach(function(infoArray, index) {
+            var dataString = infoArray.join(";");
+            csvContent += index < data.length ? dataString + "\n" : dataString;
+        });
+        console.log(csvContent);
+        var encodedUri = encodeURI(csvContent);
+        var csvData = decodeURIComponent(csvContent);
+        var filename = "damnPrettyFilename.csv";
+
+        if (window.navigator.msSaveBlob) {
+            var blob = new Blob([csvData], {
+                type: "data:text/csv;charset=CP-1252;"
+            });
+            navigator.msSaveBlob(blob, filename);
+        }
+
+    }
 });

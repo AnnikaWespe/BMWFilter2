@@ -2,15 +2,15 @@
 <html>
 	<head>
 		<title></title>
-		
 		<script src="/sites/GWTZ/scripts/jquery-1.12.4.min.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/chosen.jquery.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/moment-with-locales.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/bootstrap.min.js"></script>
 		<script src="/sites/GWTZ/scripts/sharepointplus-3.13.min.js" type="text/javascript"></script>
-		<script src="/sites/GWTZ/scripts/Filterfunktion/Filter.js" type="text/javascript"></script>
+		<script src="/sites/GWTZ/scripts/jquery.qtip.min.js" type="text/javascript"></script>
 		<link href="/sites/GWTZ/scripts/bootstrap.min.css" rel="stylesheet" media="screen">
 		<link href="/sites/GWTZ/scripts/chosen.css" rel="stylesheet">
+		<link href="/sites/GWTZ/scripts/jquery.qtip.min.css" rel="stylesheet">
 		<link href="/sites/GWTZ/scripts/Filterfunktion/Filter.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body>
@@ -26,5 +26,6 @@
 		</thead>
 		<tbody>
 		</table>
+		<script src="/sites/GWTZ/scripts/Filterfunktion/Filter.js" type="text/javascript"></script>
 	</body>
 </html>

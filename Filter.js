@@ -4,13 +4,14 @@ var mileageInputField = "#inputVonBiskm\\-Stand\\ \\(Mileage\\)";
 var berichtsNrInputField = "#inputVonBisBerichts-Nr\\.";
 var placeholder = {};
 placeholder["Berichts-Nr."] = "yyyy_xxxx-yyyy_xxxx";
-placeholder["km-Stand (Mileage)"] = "in Tausend / in thousands";
+placeholder["km-Stand (Mileage)"] = "von-bis in Tausend / from-to in thousands";
 placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
 var noPropertiesAlert = "Bitte wählen Sie mindestens ein Filterkriterium aus!\n\nPlease select at least one property to filter by!";
 var BerichtsNrInputAlert = "Feld Berichts-Nr.:\n\nBitte geben Sie den Bereich für die Berichts-Nr. ohne Leerzeichen ein.\nPlease enter the range for the report number w/o blanks.\n\nExamples:\n\n2016_0001-2017_0001\n\n2017_1234-2017_1234";
 var dateAlert = "Feld Produktionsdatum / production date:\n\nBitte geben Sie Start- und Enddatum im Format tt.mm.jjjj ein.\nPlease enter the start and end date in the format dd.mm.yyyy\n\nExample:\n\n01.01.2016-01.01.2017";
-var mileageAlert = "Feld km-Stand / mileage: \n\nBitte geben Sie eine ganze Zahl ohne (.) oder (,) ein\nPlease enter a whole number (no decimals) without (.) or (,)";
+var mileageAlert = "Feld km-Stand / mileage: \n\nBeispiel: Wollen Sie Stände von 10 000 - 12 000 km abfragen, geben Sie ein: 10-12\nExample: If you want to retrieve the range from 10 000 - 12 000 km, please enter: 10-12";
 var imageInfoSignMileage = "  <img src='/sites/GWTZ/scripts/Informationsign.png' height='16px' width='16px' id='kmStandInfo'>"
+var kmStandInfoQtipContent = 'Beispiel: Wollen Sie Stände von 10 000 - 12 000 km abfragen, geben Sie ein: 10-12------------------------------------------------------------------------------------------------------ Example: If you want to retrieve the range from 10 000 - 12 000 km, please enter: 10-12'
     //set time format to German
 moment.locale("de");
 
@@ -58,6 +59,11 @@ $(document).ready(function() {
             };
             $("#column0").hide();
             $('label[for="inputVonBiskm\\-Stand\\ \\(Mileage\\)"]').append(imageInfoSignMileage);
+            $('#kmStandInfo').qtip({
+                content: kmStandInfoQtipContent,
+                show: 'mouseover',
+                hide: 'mouseout'
+            });
             $SP().list("Prüfberichte").get(function(data) {
                 //fill in the data 
                 var numberOfRows = data.length;
@@ -81,7 +87,6 @@ $(document).ready(function() {
                                 helperArray = currentEntry.split("_");
                                 currentEntry = helperArray[0] + helperArray[1];
                                 valuesBerichtsNr[i] = currentEntry;
-                                console.log(i + valuesBerichtsNr[i]);
                             }
                         } else {
                             if (j == 2 && currentEntry) {
@@ -158,7 +163,6 @@ $(document).ready(function() {
                                 var berichtsNrInputBis = helperArray[1].split("_");
                                 var berichtsNrVon = new Number(berichtsNrInputVon[0] + berichtsNrInputVon[1]);
                                 var berichtsNrBis = new Number(berichtsNrInputBis[0] + berichtsNrInputBis[1]);
-                                console.log(berichtsNrVon + "     " + berichtsNrBis);
                                 for (var i = 0; i < numberOfRows; i++) {
                                     var currentNumber = new Number(valuesBerichtsNr[i]);
                                     if (currentNumber < berichtsNrVon || berichtsNrBis < currentNumber) {
@@ -168,9 +172,10 @@ $(document).ready(function() {
                             }
                             //Filter by mileage
                             if (mileageInput) {
+                                var columnNumberMileage = displayNameColumnNumberMap["km-Stand (Mileage)"];
                                 mileageInput = new Number(mileageInput);
                                 for (var i = 0; i < numberOfRows; i++) {
-                                    var currentNumber = new Number($("#row" + i + "column" + 10).html());
+                                    var currentNumber = new Number($("#row" + i + "column" + columnNumberMileage).html());
 
                                 }
                             }
@@ -219,7 +224,7 @@ $(document).ready(function() {
     }
     var checkMileage = function() {
         var inputToBeChecked = $(mileageInputField).val();
-        var testRegExp = /^\d+$/;
+        var testRegExp = /^\d+-^\d+/;
         var res = testRegExp.test(inputToBeChecked);
         if (inputToBeChecked != '') {
             if (!res) {

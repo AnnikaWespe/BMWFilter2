@@ -3,16 +3,18 @@ var productionDateInputField = "#inputVonBisProd\\.\\-Datum\\ Fzg\\.\\ \\(Produc
 var mileageInputField = "#inputVonBiskm\\-Stand\\ \\(Mileage\\)";
 var berichtsNrInputField = "#inputVonBisBerichts-Nr\\.";
 var placeholder = {};
-placeholder["Berichts-Nr."] = "yyyy_xxxx-yyyy_xxxx";
-placeholder["km-Stand (Mileage)"] = "von-bis in Tausend / from-to in thousands";
-placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
 var noPropertiesAlert = "Bitte wählen Sie mindestens ein Filterkriterium aus!\n\nPlease select at least one property to filter by!";
 var BerichtsNrInputAlert = "Feld Berichts-Nr.:\n\nBitte geben Sie den Bereich für die Berichts-Nr. ohne Leerzeichen ein.\nPlease enter the range for the report number w/o blanks.\n\nExamples:\n\n2016_0001-2017_0001\n\n2017_1234-2017_1234";
 var dateAlert = "Feld Produktionsdatum / production date:\n\nBitte geben Sie Start- und Enddatum im Format tt.mm.jjjj ein.\nPlease enter the start and end date in the format dd.mm.yyyy\n\nExample:\n\n01.01.2016-01.01.2017";
-var mileageAlert = "Feld km-Stand / mileage: \n\nBeispiel: Wollen Sie Stände von 10 000 - 12 000 km abfragen, geben Sie ein: 10-12\nExample: If you want to retrieve the range from 10 000 - 12 000 km, please enter: 10-12";
+var mileageAlert = "Feld km-Stand / mileage: \n\nBeispiel: Wollen Sie Stände von 10 000 - 12 000 km abfragen, geben Sie ein: 10-12\n\nExample: If you want to retrieve the range from 10 000 - 12 000 km, please enter: 10-12";
 var imageInfoSignMileage = "  <img src='/sites/GWTZ/scripts/Informationsign.png' height='16px' width='16px' id='kmStandInfo'>"
 var kmStandInfoQtipContent = 'Beispiel: Wollen Sie Stände von 10 000 - 12 000 km abfragen, geben Sie ein: 10-12------------------------------------------------------------------------------------------------------ Example: If you want to retrieve the range from 10 000 - 12 000 km, please enter: 10-12'
-    //set time format to German
+var columnNameProdDat = "Prod_x002e__x002d_Datum_x0020_Fzg_x002e__x0020__x0028_Production_x0020_date_x0029_";
+var columnNameKmStand = "km_x002d_Stand_x0020__x0028_Mileage_x0029_";
+placeholder["Berichts-Nr."] = "yyyy_xxxx-yyyy_xxxx";
+placeholder["km-Stand (Mileage)"] = "von-bis in Tausend / from-to in thousands";
+placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
+//set time format to German
 moment.locale("de");
 
 
@@ -70,14 +72,14 @@ $(document).ready(function() {
                 var $tablebody = $("#table").find("tbody");
                 for (var i = 0; i < numberOfRows; i++) {
                     var stringToAppend = '<tr id="row' + i + '" class = "tablerow">';
-                    for (var j = 0; j < dataView.fields.length; j++) {
+                    for (var j = 0; j < numberOfColumns; j++) {
                         var currentColumnName = dataView.fields[j];
                         var currentEntry = data[i].getAttribute(currentColumnName);
                         var currentLinkToFile;
                         var nameAndLinkArray;
                         var currentPosition = "row" + i + "column" + j;
                         //make Berichts-Nr. appear as a link 
-                        if (j == 1 && currentEntry) {
+                        if (currentColumnName == "Berichts_x002d_Nr_x002e_" && currentEntry) {
                             if (currentEntry.indexOf(",")) {
                                 var helperArray;
                                 nameAndLinkArray = currentEntry.split(",");
@@ -89,10 +91,10 @@ $(document).ready(function() {
                                 valuesBerichtsNr[i] = currentEntry;
                             }
                         } else {
-                            if (j == 2 && currentEntry) {
+                            if (currentColumnName == columnNameProdDat && currentEntry) {
                                 var date = moment(currentEntry);
                                 currentEntry = date.format('L')
-                            } else if (j == 10 && currentEntry) {
+                            } else if (currentColumnName == columnNameKmStand && currentEntry) {
                                 var helperArray = currentEntry.split(".");
                                 currentEntry = helperArray[0];
                             }
@@ -173,12 +175,33 @@ $(document).ready(function() {
                             //Filter by mileage
                             if (mileageInput) {
                                 var columnNumberMileage = displayNameColumnNumberMap["km-Stand (Mileage)"];
-                                mileageInput = new Number(mileageInput);
+                                var helperArray = mileageInput.split("-");
+                                var mileageInputFrom = new Number(helperArray[0] + "000");
+                                var mileageInputTo = new Number(helperArray[1] + "000");
+                                console.log("mileageInputFrom: " + mileageInputFrom);
+                                console.log("mileageInputTo: " + mileageInputTo);
                                 for (var i = 0; i < numberOfRows; i++) {
                                     var currentNumber = new Number($("#row" + i + "column" + columnNumberMileage).html());
-
+                                    if (currentNumber < mileageInputFrom || mileageInputTo < currentNumber) {
+                                        $("#row" + i).hide();
+                                    }
                                 }
-                            }
+                            };
+
+                            if (dateInput) {
+                                var columnNumberDate = displayNameColumnNumberMap["Prod.-Datum Fzg. (Production date)"];
+                                console.log(columnNumberDate);
+                                var helperArray = dateInput.split("-");
+                                var dateFrom = moment(helperArray[0], 'DD.MM.YYYY');
+                                var dateTo = moment(helperArray[1], 'DD.MM.YYYY');
+                                for (var i = 0; i < numberOfRows; i++) {
+                                    var currentEntry = $("#row" + i + "column" + columnNumberDate).html();
+                                    var currentDate = moment(currentEntry, 'DD.MM.YYYY');
+                                    if (currentDate < dateFrom || dateTo < currentDate) {
+                                        $("#row" + i).hide();
+                                    }
+                                }
+                            };
 
                             var numberOfRowsjQuery = $(".tablerow:visible").not('[style *= "display:none"]').length;
                             $("#numberOfResults").append(": " + numberOfRowsjQuery);
@@ -224,7 +247,7 @@ $(document).ready(function() {
     }
     var checkMileage = function() {
         var inputToBeChecked = $(mileageInputField).val();
-        var testRegExp = /^\d+-^\d+/;
+        var testRegExp = /d*-d*/;
         var res = testRegExp.test(inputToBeChecked);
         if (inputToBeChecked != '') {
             if (!res) {
@@ -233,4 +256,6 @@ $(document).ready(function() {
             } else return true;
         } else return true;
     }
+
+    var
 });

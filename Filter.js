@@ -13,6 +13,7 @@ var columnNameProdDat = "Prod_x002e__x002d_Datum_x0020_Fzg_x002e__x0020__x0028_P
 var columnNameKmStand = "km_x002d_Stand_x0020__x0028_Mileage_x0029_";
 var numberOfRows;
 var numberOfColumns;
+var displayNameColumnNumberMap = {};
 placeholder["Berichts-Nr."] = "yyyy_xxxx-yyyy_xxxx";
 placeholder["km-Stand (Mileage)"] = "von-bis in Tausend / from-to in thousands";
 placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
@@ -26,7 +27,6 @@ $(document).ready(function() {
         var displaynameNameMap = {};
         var displayedColumns = [];
         var valuesForDropDown = {};
-        var displayNameColumnNumberMap = {};
         var valuesBerichtsNr = [];
         var filterAlreadyClicked;
         //creating maps so we can get SP name of column from displayed name and vice versa
@@ -180,8 +180,6 @@ $(document).ready(function() {
                                 var helperArray = mileageInput.split("-");
                                 var mileageInputFrom = new Number(helperArray[0] + "000");
                                 var mileageInputTo = new Number(helperArray[1] + "000");
-                                console.log("mileageInputFrom: " + mileageInputFrom);
-                                console.log("mileageInputTo: " + mileageInputTo);
                                 for (var i = 0; i < numberOfRows; i++) {
                                     var currentNumber = new Number($("#row" + i + "column" + columnNumberMileage).html());
                                     if (currentNumber < mileageInputFrom || mileageInputTo < currentNumber) {
@@ -192,7 +190,6 @@ $(document).ready(function() {
 
                             if (dateInput) {
                                 var columnNumberDate = displayNameColumnNumberMap["Prod.-Datum Fzg. (Production date)"];
-                                console.log(columnNumberDate);
                                 var helperArray = dateInput.split("-");
                                 var dateFrom = moment(helperArray[0], 'DD.MM.YYYY');
                                 var dateTo = moment(helperArray[1], 'DD.MM.YYYY');
@@ -263,36 +260,34 @@ $(document).ready(function() {
     var getExcel = function() {
         var data = [];
         var headerArray = [];
+        var csvContent = "\uFEFF";
+        var filename = "Filter" + moment().format('DD_MM_YYYY') + ".csv";
+
         for (var i = 1; i < numberOfColumns; i++) {
             headerArray.push($("th#column" + i).html());
         };
         data.push(headerArray);
         for (var i = 0; i < numberOfRows; i++) {
             var $currentRow = $("#row" + i);
+            var columnNumberBerichtsNr = displayNameColumnNumberMap["Berichts-Nr."];
             if ($currentRow.is(':visible')) {
                 var currentArray = [];
                 for (var j = 1; j < numberOfColumns; j++) {
-                    currentArray.push($("#row" + i + "column" + j).html());
+                    currentArray.push($("#row" + i + "column" + j).text());
                 };
                 data.push(currentArray);
             };
         };
-        var csvContent; //= "data:text/csv;charset=utf-8,";
         data.forEach(function(infoArray, index) {
             var dataString = infoArray.join(";");
             csvContent += index < data.length ? dataString + "\n" : dataString;
         });
-        console.log(csvContent);
-        var encodedUri = encodeURI(csvContent);
-        var csvData = decodeURIComponent(csvContent);
-        var filename = "damnPrettyFilename.csv";
 
         if (window.navigator.msSaveBlob) {
-            var blob = new Blob([csvData], {
-                type: "data:text/csv;charset=CP-1252;"
+            var blob = new Blob([csvContent], {
+                type: "data:text/csv;charset=windows-1252"
             });
             navigator.msSaveBlob(blob, filename);
         }
-
     }
 });

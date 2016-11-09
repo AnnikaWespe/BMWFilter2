@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title></title>
+		<meta charset="utf-8">
 		<script src="/sites/GWTZ/scripts/jquery-1.12.4.min.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/chosen.jquery.js" type="text/javascript"></script>
 		<script src="/sites/GWTZ/scripts/moment-with-locales.js" type="text/javascript"></script>

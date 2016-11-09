@@ -61,7 +61,7 @@ $(document).ready(function() {
                 };
                 $("#table").find("thead").find("tr").append('<th id="column' + i + '">' + currentDisplayName + '</th>');
             };
-            $("#column0").hide();
+            //$("#column0").hide();
             $('label[for="inputVonBiskm\\-Stand\\ \\(Mileage\\)"]').append(imageInfoSignMileage);
             $('#kmStandInfo').qtip({
                 content: kmStandInfoQtipContent,
@@ -109,7 +109,7 @@ $(document).ready(function() {
                     stringToAppend += '</tr>';
                     $tablebody.append(stringToAppend);
                 };
-                $("[id*='column0']").hide();
+                //$("[id*='column0']").hide();
                 $("select").each(function(index, value) {
                     //create dropdown menus for each element in table head
                     var currentColumnDisplayName = $(this).attr('name');
@@ -211,7 +211,7 @@ $(document).ready(function() {
                 $("#filterReset").click(function() {
                     $("[id*='row']").show();
                     $(".search-choice-close").click();
-                    $("[id*='column0']").hide();
+                    //$("[id*='column0']").hide();
                     $("#numberOfResults").html("Anzahl Ergebnisse");
                     $(".inputVonBis").val('');
                     filterAlreadyClicked = 0;

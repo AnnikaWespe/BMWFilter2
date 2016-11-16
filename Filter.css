@@ -44,3 +44,10 @@ button.disabled_special{
 button.export{
 	float: right;
 }
+div#selectBox{
+	width: 1030px;
+}
+div.buttonsDiv{
+	width: 1000px;
+	margin: 20px 0;
+}

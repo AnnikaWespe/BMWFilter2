@@ -32,10 +32,12 @@
 	<body>
 		<div class="row" id="selectBox">
 		</div>
+		<div class="buttonsDiv">
 		<button class="btn btn-primary active" id="filter" type="button">Filter anwenden/Apply Filter</button>
 		<button class="btn btn-primary active" id="filterReset" type="button">Filter reset</button>
 		<button class="btn btn-primary disabled_special" disabled id="numberOfResults">Anzahl Ergebnisse</button>
 		<button class="btn btn-primary active export" id="export" type="button">Ergebnisse als Excel-Datei exportieren / export results</button>
+		</div>
 		<table class="table table-striped" id="table">
 			<thead>
 			<tr></tr>

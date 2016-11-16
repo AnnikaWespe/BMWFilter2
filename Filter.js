@@ -63,19 +63,18 @@ $(document).ready(function() {
                 displayNameColumnNumberMap[currentDisplayName] = i;
                 //create input fields where necessary
                 if (columnsEnterVonBis.indexOf(currentDisplayName) !== -1) {
-                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><label for="inputVonBis' +
+                    $("#selectBox").append('<div class="col-md-4" id="column' + i + '"><label for="inputVonBis' +
                         displayedColumns[i] + '">' + displayedColumns[i] + '</label><input class="inputVonBis" id="inputVonBis' +
                         displayedColumns[i] + '" placeholder="' + placeholder[displayedColumns[i]] + '" name="' +
                         displayedColumns[i] + '" type = "text"></div>');
                 } else { //create select fields where necessary
-                    $("#selectBox").append('<div class="col-md-3" id="column' + i + '"><label for="select' + displayedColumns[i] +
+                    $("#selectBox").append('<div class="col-md-4" id="column' + i + '"><label for="select' + displayedColumns[i] +
                         '">' + displayedColumns[i] + '</label><select id="select' + displayedColumns[i] +
                         '" data-placeholder="auswählen / select" name="' + displayedColumns[i] +
                         '" multiple class="chosen-select"></select></div>');
                 };
                 $("#table").find("thead").find("tr").append('<th id="column' + i + '">' + currentDisplayName + '</th>');
             };
-            //$("#column0").hide();
             $('label[for="inputVonBiskm\\-Stand\\ \\(Mileage\\)"]').append(imageInfoSignMileage);
             $('#kmStandInfo').qtip({
                 content: kmStandInfoQtipContent,

@@ -21,7 +21,21 @@ placeholder["Prod.-Datum Fzg. (Production date)"] = "dd.mm.yyyy-dd.mm.yyyy";
 moment.locale("de");
 
 
+
+
 $(document).ready(function() {
+    //indexOf method for IE8
+    if (!Array.prototype.indexOf) {
+        Array.prototype.indexOf = function(obj, start) {
+            for (var i = (start || 0), j = this.length; i < j; i++) {
+                if (this[i] === obj) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    };
+
     $SP().list("Prüfberichte").info(function(fields) {
         var nameDisplaynameMap = {};
         var displaynameNameMap = {};
@@ -93,7 +107,10 @@ $(document).ready(function() {
                                 valuesBerichtsNr[i] = currentEntry;
                             }
                         } else {
-                            if (currentColumnName == columnNameProdDat && currentEntry) {
+                            if (!currentEntry) {
+                                console.log(currentEntry);
+                                currentEntry = "";
+                            } else if (currentColumnName == columnNameProdDat && currentEntry) {
                                 var date = moment(currentEntry);
                                 currentEntry = date.format('L')
                             } else if (currentColumnName == columnNameKmStand && currentEntry) {
@@ -109,7 +126,7 @@ $(document).ready(function() {
                     stringToAppend += '</tr>';
                     $tablebody.append(stringToAppend);
                 };
-                //$("[id*='column0']").hide();
+                $("#numberOfResults").unbind('mouseenter mouseleave');
                 $("select").each(function(index, value) {
                     //create dropdown menus for each element in table head
                     var currentColumnDisplayName = $(this).attr('name');
@@ -262,7 +279,7 @@ $(document).ready(function() {
         var headerArray = [];
         var csvContent = "\uFEFF";
         var filename = "Filter" + moment().format('DD_MM_YYYY') + ".csv";
-
+        var dataLength;
         for (var i = 1; i < numberOfColumns; i++) {
             headerArray.push($("th#column" + i).html());
         };
@@ -278,10 +295,11 @@ $(document).ready(function() {
                 data.push(currentArray);
             };
         };
-        data.forEach(function(infoArray, index) {
-            var dataString = infoArray.join(";");
-            csvContent += index < data.length ? dataString + "\n" : dataString;
-        });
+        dataLength = data.length;
+        for (var i = 0; i < dataLength; i++) {
+            var dataString = data[i].join(";");
+            csvContent += i < dataLength ? dataString + "\n" : dataString;
+        };
 
         if (window.navigator.msSaveBlob) {
             var blob = new Blob([csvContent], {
